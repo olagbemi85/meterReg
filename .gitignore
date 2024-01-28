@@ -1,0 +1,7 @@
+
+
+
+
+
+#ignore all .sqlite3 files
+*.sqlite3
