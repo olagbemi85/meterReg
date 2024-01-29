@@ -87,18 +87,21 @@
     <div class="container-fluid">
  
         <!-- Advanced Form Example With Validation -->
-        <div class="row clearfix">
-            {% include 'partials/_messages.html' %}
+        <div class="row clearfix">            
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
                     <div class="header">
                         <h2>METER APPLICATION FORM</h2>
                     </div>
                     <div class="body">
-                        <form id="formv" action="{% url 'meterapp:new_application' %}" method="POST">
-                            {% include 'partials/_messages.html' %}
+                        {%comment%}
+                        <form id="formv" action="{% url 'meterapp:new_application' %}" method="POST" enctype="multipart/form-data">
+                           {% include 'partials/_messages.html' %}
                             {% csrf_token %}
                             {{form.no_field_errors}}
+                            <!--<div class="alert alert-danger">
+                                <strong></strong>
+                            </div>-->
                             {% if form.errors %}
                             {% for field in form %}
                                 {% for error in field.errors %} 
@@ -108,25 +111,25 @@
                                 {% endfor %}
                             {% endfor %}
                             {% endif %}
-                            <div class="tab">
+                            <div class="ta">
                                 <h3>Account Information</h3>
                                 <fieldset>
                                     <br /><br />
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div>
-                                            {{form.user.errors}}
+                                            <strong>{{form.user.errors}}</strong>
                                             <label class="form-label">Applicant Or Owners Email</label>
-                                            <select class="form-control" name="user">
+                                            <!--<select class="form-control" name="user">
                                                 <option >{{users}}</option>    
-                                            </select>                                      
-                                            
+                                            </select>-->                                      
+                                            {{form.user}}
                                         </div>
                                     </div>
                                     
                                     <div class="col-lg-3 col-sm-6">
-                                        {{form.premises_usage.errors}}
+                                        <strong>{{form.premises_usage.errors}}</strong>
                                         <label class="form-label">Use of the Premises</label>
-                                     {%comment%}   {{form.premises_usage}} {%endcomment%} 
+                                     
                                      <select class="form-control" name="premises_usage">
                                         {% for i in form.premises_usage %}
                                                 <option >{{i}}</option>
@@ -134,9 +137,9 @@
                                     </select>
                                     </div>
                                     <div class="col-lg-3 col-sm-6">
-                                        {{form.state.errors}}
+                                        <strong>{{form.state.errors}}</strong>
                                         <label class="form-label">State*</label>
-                                      {%comment%}  {{form.state}}  {%endcomment%} 
+                                      
                                       <select class="form-control" name="state">
                                         {% for i in form.state %}
                                                 <option >{{i}}</option>
@@ -144,18 +147,18 @@
                                     </select>
                                     </div>
                                     <div class="col-lg-3 col-sm-6">
-                                        {{form.local_gov_area.errors}}
+                                       <strong>{{form.local_gov_area.errors}}</strong> 
                                         <label class="form-label">Local Government Area*</label>
                                         {{form.local_gov_area}}   
                                     </div>
                                     <div class="col-lg-3 col-sm-6">
-                                        {{form.meter_type.errors}}
+                                       <strong>{{form.meter_type.errors}}</strong> 
                                         <label class="form-label">Type of Meter*</label>
                                         {{form.meter_type}}  
                                     </div>
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div>
-                                            {{form.house_address.errors}}
+                                            <strong>{{form.house_address.errors}}</strong>
                                             <label class="form-label">Address Of The Premises/House To use the Meter*</label>                                        
                                             {{form.house_address}}
                                         </div>
@@ -163,10 +166,10 @@
                                     <br />
                                     
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                        {{form.building_type.errors}}
+                                        <strong>{{form.building_type.errors}}</strong>
                                             <label class="form-label">Type of Premises(Building)*</label>
                                             <input type="text" name="building_type" list="building_type_othe" class="form-control" placeholder="please specify building Type">
-                                            {%comment%}{{form.building_type}}{%endcomment%}
+                                            
                                             <datalist id="building_type_othe">
                                                 {% for i in form.building_type %}
                                                 <option >{{i}}</option>
@@ -175,8 +178,7 @@
                                     </div>
                                     
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                        {{form.account_number.errors}}
-                                        
+                                            <strong>{{form.account_number.errors}}</strong>
                                             <label class="form-label">Enter Account Number</label>
                                             {{form.account_number}}
                                         
@@ -190,7 +192,7 @@
                                 <br />
                                 <fieldset>  
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        {{form.electrical_personnel_name.errors}}
+                                        <strong>{{form.electrical_personnel_name.errors}}</strong>
                                         <div id="hiddenForm">
                                             <label class="form-label">Name of Engineer or Accredited Electrical Contractor</label>
                                             {{form.electrical_personnel_name}}
@@ -241,13 +243,13 @@
                                     </div>  
                                 </fieldset>
                             </div>
-                            <div class="tab">
+                            <!--<div class="tab">
                                 <h3>Terms & Conditions - Finish</h3>
                                 <fieldset>
                                     <input id="acceptTerms-2" name="acceptTerms" type="checkbox" required>
                                     <label for="acceptTerms-2">I agree with the Terms and Conditions.</label>
                                 </fieldset>
-                            </div>
+                            </div>-->
                             <div style="overflow:auto;">
                                 <div style="float:right;">
                                     <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
@@ -260,7 +262,18 @@
                                 <span class="step"></span>
                             </div>    
                         </form>
+                        {%endcomment%}
 
+
+                        
+                        <form id="form" action="{% url 'meterapp:new_application' %}" method="POST" enctype="multipart/form-data">
+                            {% include 'partials/_messages.html' %}
+                             {% csrf_token %}
+                             {{ form.as_ul }}
+                             <div class="form-group">
+                                <button class="btn btn-energy" type="submit" name="">Submit</button>
+                              </div>
+                        </form>     
                     </div>
                 </div>
             </div>
@@ -405,12 +418,12 @@ fetch(BREEDS_URL)
 // ~~~ date validation
 
 function checkStartDate() {
-    var startDate = document.getElementById('sdate').value;
+    var startDate = document.getElementById('ate').value;
     var selectedStartDate = new Date(startDate);
     var now = new Date();
     if (selectedStartDate > now) {
         alert("Please enter the date of application and can't be future date");
-        $("#sdate").addClass("invalid");
+        $("#ate").addClass("invalid");
     }
 }
 

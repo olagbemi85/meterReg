@@ -6,6 +6,11 @@ from .models import *
 
 
 
+@admin.register(MeterApplication)
+class MeterApplicationAdmin(admin.ModelAdmin):
+    list_display = ['building_type']
+
+
 @admin.register(ElectricalPersonnelCategory)
 class ElectricalPersonnelCategoryAdmin(admin.ModelAdmin):
     list_display = ['level_of_profession']

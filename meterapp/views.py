@@ -100,10 +100,11 @@ def input_user(request):
 def meterApplicationNew(request):
     u = request.user
     users = User.objects.get(email=u)
-    form = MeterApplicationForm()
+    initial_data = {'user': users.email }
+    form = MeterApplicationForm(initial = initial_data) 
     context={'form':form}
     if request.method == 'POST':
-          application_form = MeterApplicationForm(request.POST, instance=request.user)
+          forms = MeterApplicationForm(request.POST )
           state = request.POST['state']
           premises_usage = request.POST['premises_usage']
           meter_type = request.POST['meter_type']
@@ -122,27 +123,31 @@ def meterApplicationNew(request):
           user = request.POST['user']
           
           
-          err = {'form' :application_form}
+          err = {'form' :forms}
 
           context={'state':state, 'premises_usage':premises_usage, 'meter_type':meter_type, 'house_address':house_address,
                    'building_type':building_type,'account_number':account_number,'electrical_personnel_name':electrical_personnel_name,'licence_number':licence_number,
                    'category':category,
-                   'sdate':sdate,'electrical_point_list':electrical_point_list,'total_wattage':total_wattage, 'regional_office':regional_office, 'area_office':area_office, 'local_gov_area':local_gov_area, 'user':user}
-          print(context)
-          if application_form.is_valid(): 
-              forms = MeterApplication.objects.create(state=state, premises_usage=premises_usage, meter_type=meter_type, house_address=house_address,
+                   'sdate':sdate,'electrical_point_list':electrical_point_list,'total_wattage':total_wattage, 'regional_office':regional_office, 'area_office':area_office, 'local_gov_area':local_gov_area, 'user': user}
+          #print(context)
+          if forms.is_valid():
+              
+              foms = MeterApplication.objects.create(state=state, premises_usage=premises_usage, meter_type=meter_type, house_address=house_address,
                    building_type=building_type, account_number=account_number, electrical_personnel_name=electrical_personnel_name, licence_number=licence_number,
                    category=category,
-                   sdate=sdate, electrical_point_list=electrical_point_list, total_wattage=total_wattage, regional_office=regional_office, area_office=area_office, local_gov_area=local_gov_area, user=user)    
-              forms.save()
-              print(forms)
+                   sdate=sdate, electrical_point_list=electrical_point_list, total_wattage=total_wattage, regional_office=regional_office,
+                     area_office=area_office, local_gov_area=local_gov_area, user=user.instance)    
+              foms.save()
+              print(context)
               messages.success(request, 'Form successfully submitted')
               return redirect('meterapp:home')
           else:
               messages.error(request, 'form not submitted')
               explanation = form.errors.as_data()
-              return render(request, 'meterapp/newMeterapp.html',err)            
-    return render(request, 'meterapp/newMeterapp.html',{'form':form, 'users':users})
+              return render(request, 'meterapp/newMeterapp.html',err)
+    #else:
+         #form = MeterApplication()                  
+    return render(request, 'meterapp/newMeterapp.html',{'form':form})
 
 
 class UsernamevalidationView(View):
