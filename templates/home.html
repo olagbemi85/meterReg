@@ -216,7 +216,7 @@
  <section class="content">
     {%if form%}
   <div class="container-fluid">   
-      <div class="row clearfix">
+    <div class="row clearfix">
           <!-- Task Info -->
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
               <div class="card">
@@ -240,47 +240,58 @@
                           <table class="table table-hover dashboard-task-infos">
                               <thead>
                                   <tr>
-                                      <th>#</th>
+                                      <th>Application No</th>
                                       <th>Name</th>
                                       <th>Position</th>
-                                      <th>Region</th>
                                       <th>Area Office</th>
+                                      <th>Percentage completed</th>
+                                      <th>Form Detail</th>
                                   </tr>
                               </thead>
+                              {%for s in form%}
                               <tbody>
                                   <tr>
-                                      <td>1</td>
-                                      <td>Task A</td>
+                                      <td>{{s.application_number}}</td>
+                                      <td>{{users}}</td>
                                       <td><span class="label bg-green">Doing</span></td>
-                                      <td>John Doe</td>
+                                      <td>{{s.area_office}}</td>
                                       <td>
                                           <div class="progress">
                                               <div class="progress-bar bg-green" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" style="width: 62%"></div>
                                           </div>
                                       </td>
-                                  </tr>
-                                  <tr>
-                                      <td>2</td>
-                                      <td>Task B</td>
-                                      <td><span class="label bg-blue">To Do</span></td>
-                                      <td>John Doe</td>
-                                      <td>
-                                          <div class="progress">
-                                              <div class="progress-bar bg-blue" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"></div>
-                                          </div>
-                                      </td>
-                                  </tr>
-                                 
+                                      <td><a href="{{ s.get_absolute_url }}"><span class="label bg-green">Form Detail</span></a></td>
+                                  </tr>   
                               </tbody>
+                              {%endfor%}  
                           </table>
                       </div>
                   </div>
               </div>
           </div>
-      </div>
-  </div>
+          <!--end task-->
+          <!-- if no form-->
+          {%else%}
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="info-box-4">
+                <!--<div class="icon">
+                    <div class="chart chart-bar" data-chartcolor="yellow">6,8,6,8,10</div>
+                </div>-->
+                <div class="content">
+                    <div class="text" data-chartcolor="yellow">NO APPLICATION</div>
+                <p> You have no meter application avaliable at the moment you can <button class="btn-energy"><a class="aa" href="{% url 'meterapp:new_application' %}"> Apply </a></button></p>
+                    <!--<div class="text"><a class="text" href="{{ s.get_absolute_url }}">Station Detail</a></div>
+                    <div class="text">{{s.area_office}}</div>-->
+                </div>
+            </div>
+        </div>
+        <!--end no form-->
+    </div>
+  </div>  
   {%endif%}
 
+
+  {%comment%}
   <div class="container-fluid">
       <div class="row">
         {%if form%}
@@ -317,9 +328,9 @@
             </div>
         </div>
         {%endif%}
-      </div>
-  
+      </div>  
   </div>
+  {%endcomment%}
 </section>
 
 {% endblock %}

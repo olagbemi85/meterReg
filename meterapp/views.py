@@ -4,7 +4,7 @@ from .serializers import *
 from rest_framework import generics
 from rest_framework import mixins
 from .models import *
-from .forms import MeterApplicationForm
+from .forms import MeterApplicationForm, MeterApplicationFormupdate
 from account.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -18,6 +18,7 @@ import json
 from django.http import JsonResponse
 from django.contrib import messages
 import random
+from django.views.generic.edit import UpdateView
 
 
 
@@ -33,8 +34,10 @@ def index(request):
         #if request.user.is_superuser or request.user.is_staff:
             #return redirect('meterapp:home')
         if request.user.is_staff:
+             #users = User.objects.filter(email=user)
+             users = user.first_name
              form = MeterApplication.objects.filter(user_apply=user)
-             return render(request, 'home.html',{'form':form})
+             return render(request, 'home.html',{'form':form, 'users':users})
             
         else:
             form = MeterApplication.objects.filter(user_apply=user)
@@ -85,16 +88,9 @@ def meterApplicationNew(request):
                    'sdate':sdate,'electricalList':electricalList,'total_wattage':total_wattage, 'regional_office':regional_office, 'area_office':area_office, 'local_gov_area':local_gov_area, 'user_apply': user_apply}
           
           if forms.is_valid():
-              '''
-              foms = MeterApplication.objects.create(state=state, premises_usage=premises_usage, meter_type=meter_type, house_address=house_address,
-                   building_type=building_type, account_number=account_number, electrical_personnel_name=electrical_personnel_name, licence_number=licence_number,
-                   category=category,
-                   sdate=sdate, electricalList=electricalList, total_wattage=total_wattage, regional_office=regional_office,
-                     area_office=area_office, local_gov_area=local_gov_area, user=getUser.id)
-              ''' 
               ap = random.randrange(0000,9999)
-              ph = users.phone_number
-              ap_no = 'AEDC'+'-'+str(ph)+'-'+str(ap)
+              ph = users.id
+              ap_no = 'AEDC'+'-'+area_office+'-'+str(ph)+str(ap)
               ap_number = ap_no
               
               foms = MeterApplication.objects.create(state=state, premises_usage=premises_usage, meter_type=meter_type, house_address=house_address,
@@ -133,34 +129,33 @@ def application_detail(request, slug):
     station = slug
     return render(request, 'meterapp/application_data.html', {'data': data, 'st':station})   
 
+
 @login_required
 def editApplication(request, slug):
-    user = request.user
-    post = MeterApplication.objects.get(application_number=slug) 
-    if request.method == 'POST':
-         pass
+    instance = get_object_or_404(MeterApplication, application_number=slug)
+    update_form = MeterApplicationFormupdate(request.POST or None, instance=instance)
+    slug = slug
+    if request.method == 'POST' and update_form.is_valid():
+         if update_form.is_valid():
+              #instance.slug = update_form.cleaned_data['application_number']
+              instance.slug = update_form.cleaned_data['account_number']
+              instance.save()
+              messages.success(request, 'Your profile is updated successfully')
+              #return redirect('meterapp:application_detail', args=[slug])
+              return redirect('meterapp:home')
+         else:
+              update_form= MeterApplicationFormupdate(instance = instance)
          
-    #context = {'post' : post}
-    return render(request, 'merterapp/app_form_edit.html')	
+    context = {'update_form' : update_form, 'st':slug}
+    return render(request, 'meterapp/app_form_edit.html', context)	
 
 
-@login_required
-def profile_customer(request):
-    user = request.user
-    pp = User.objects.get(email=user)
-    if request.method == 'POST':
-        user_form = MeterApplication(request.POST, request.FILES, instance=request.user)
+class AModelUpdateView(UpdateView):
+    model = MeterApplication
+    form_class =  MeterApplicationFormupdate # Specify your model form
+    template_name = 'meterapp/app_form_edit.html'  # Specify your template
+    slug_field = 'application_number'  # Specify the field to use for the slug
+    slug_url_kwarg = 'application_number'  # Specify the slug parameter from the URL
 
-        if user_form.is_valid():
-            user_form.save()
-            messages.success(request, 'Your profile is updated successfully')
-            return redirect('authentication:edit-profile')
-        else:
-            messages.error(request, 'fail to save profile')
-    else:
-       	#try:
-            user_form = MeterApplication(instance=request.user)
-        #except:
-            #profile = User.objects.create(user=request.user)
-            #user_form = MeterApplication(instance=profile)
-    return render(request, 'authentications/forms/update_profile.html', {'user_form': user_form, 'pp':pp })  
+    def get_success_url(self):
+        return reverse('your_success_url')  # Redirect to a success URL after updating
