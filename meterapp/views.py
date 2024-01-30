@@ -141,7 +141,7 @@ def editApplication(request, slug):
          pass
          
     #context = {'post' : post}
-    return render(request, 'merterapp/app_form_edit.html', context)	
+    return render(request, 'merterapp/app_form_edit.html')	
 
 
 @login_required
