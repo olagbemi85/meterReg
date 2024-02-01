@@ -53,33 +53,14 @@
                         <span>Home</span>
                     </a>
                 </li>
-            <!--    
+                {% if user.is_staff %}
                 <li>
-                    <a href="">
-                        <i class="material-icons">text_fields</i>
-                        <span>Power</span>
+                    <a href="{% url 'admins:home' %}">
+                        <i class="material-icons">home</i>
+                        <span>Application Received</span>
                     </a>
-                    
                 </li>
-                    <li>
-                    <a href="javascript:void(0);" class="menu-toggle">
-                        <i class="material-icons">widgets</i>
-                        <span>Widgets</span>
-                    </a>
-                    <ul class="ml-menu">
-                        <li>
-                            <a href="">
-                                <span>Cards</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <span>Infobox</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            -->
+                {%endif%}
                 <li>
                     <a href="{% url 'meterapp:new_application' %}" >
                         <i class="material-icons">assignment</i>
